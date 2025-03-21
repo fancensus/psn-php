@@ -104,11 +104,11 @@ class Trophy extends Model
     }
 
     /**
-     * Check if the user have earned this trophy.
+     * Check if the user have  this trophy.
      */
     public function earned(): bool
     {
-        return $this->pluck('earned');
+        return (bool) $this->pluck('earned');
     }
 
     /**
