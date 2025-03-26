@@ -44,7 +44,7 @@ class User extends Model
 
     /**
      * Get the trophy titles associated with this user's account.
-     * 
+     *
      * @return TrophyTitlesFactory
      */
     public function trophyTitles(): TrophyTitlesFactory
@@ -74,7 +74,7 @@ class User extends Model
 
     /**
      * Get the communication id (NPWR...) from a title id (CUSA...)
-     * 
+     *
      * Only works for PS4/PS5 titles.
      * Doesn't work with PPSA... title ids.
      */
@@ -127,7 +127,7 @@ class User extends Model
 
     /**
      * Gets the user's country.
-     * 
+     *
      * This property will only be available if the user was obtained via the user search endpoint.
      */
     public function country(): ?string
@@ -137,7 +137,7 @@ class User extends Model
 
     /**
      * Returns all the available avatar URL sizes.
-     * 
+     *
      * Each array key is the size of the image.
      */
     public function avatarUrls(): array
@@ -153,7 +153,7 @@ class User extends Model
 
     /**
      * Gets the avatar URL.
-     * 
+     *
      * This should return the largest size available.
      */
     public function avatarUrl(): string
@@ -212,7 +212,7 @@ class User extends Model
 
     /**
      * Gets mutual friend count.
-     * 
+     *
      * Returns -1 if current profile is the logged in user.
      */
     public function mutualFriendCount(): int
@@ -221,7 +221,7 @@ class User extends Model
     }
 
     /**
-     * Checks if the client has any mutual friends with the user. 
+     * Checks if the client has any mutual friends with the user.
      */
     public function hasMutualFriends(): bool
     {
@@ -238,7 +238,7 @@ class User extends Model
 
     /**
      * Checks if the client has a pending friend request with the user.
-     * 
+     *
      * @TODO: Check if this works both ways.
      */
     public function hasFriendRequested(): bool
@@ -268,5 +268,40 @@ class User extends Model
     public function fetch(): object
     {
         return $this->get('userProfile/v1/internal/users/' . $this->accountId . '/profiles');
+    }
+
+    public function getTitleTrophies($title, $npServiceName, $user = null): object
+    {
+        /*
+         * This works for trophies but without trophy name!!
+         */
+//        return $this->get(
+//            'trophy/v1/users/$user/npCommunicationIds/' . $title .'/trophyGroups/all/trophies',
+//            [
+//                'npServiceName' => 'trophy'
+//            ]
+//        );
+
+//                return $this->get(
+//            'trophy/v1/users/$user/titles/trophyTitles' . $title .'/trophyGroups/all/trophies',
+//            [
+//                'npServiceName' => 'trophy'
+//            ]
+//        );
+
+        return $this->get(
+            'trophy/v1/npCommunicationIds/' . $title . '/trophyGroups/all/trophies',
+            ['npServiceName' => $npServiceName]
+        );
+    }
+
+    public function getEarnedTrophies($user, $title, $npServiceName)
+    {
+        return $this->get(
+            'trophy/v1/users/' . $user . '/npCommunicationIds/' . $title . '/trophyGroups/all/trophies',
+            [
+                'npServiceName' => $npServiceName
+            ]
+        );
     }
 }
